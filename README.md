@@ -1,119 +1,98 @@
-# Raylane Express — MVP Deployment Guide
+# 🚌 Raylane Express (RLX) — Full MVP v4
 
-## 🏗️ Architecture Overview
+Uganda's first real-time bus & taxi booking platform.
+
+## 🚀 Deploy to Vercel
+
+```bash
+# Method 1: CLI (fastest)
+npm install
+npx vercel --prod
+
+# Method 2: GitHub import
+# Push to GitHub → vercel.com → New Project → Import → Deploy
+
+# Method 3: Local build
+npm run build   # creates /dist
+# Drag /dist to vercel.com
 ```
-raylane-backend/   → Deploy to Render.com (Node.js/Express)
-raylane-frontend/  → Deploy to Vercel (React)
+
+## 🛠 Local Development
+
+```bash
+npm install
+npm run dev     # http://localhost:3000
 ```
 
----
+## 📁 Project Structure
 
-## 🚀 BACKEND — Deploy to Render
+```
+src/
+├── components/
+│   ├── layout/          Navbar, Footer, MobileBottomNav
+│   ├── sections/        All 10 homepage sections
+│   └── ui/
+│       ├── SharedComponents.jsx   ← SINGLE SOURCE OF TRUTH
+│       │   Btn, Input, Select, Toggle, Card, StatCard, Pill
+│       │   SectionHead, BarChart, ProgressBar, Modal, Banner
+│       │   EmptyState, SeatLegend, PaymentModule, PaymentSuccess
+│       │   BusSeat55, BusSeat65, BusSeat67, TaxiSeat14
+│       ├── AIAssistant.jsx
+│       └── ToastContainer.jsx
+├── pages/
+│   ├── Home.jsx
+│   ├── BookingFlow.jsx      5-step: VehicleType→Search→Seats→Payment→Ticket
+│   ├── ParcelPage.jsx       Send/Track/History + PaymentModule
+│   ├── PartnerPortal.jsx    Apply/HowItWorks/Services/FAQ
+│   ├── admin/AdminDashboard.jsx
+│   └── operator/OperatorDashboard.jsx
+├── data/index.js         Mock data (replace with API calls)
+├── hooks/
+│   ├── useToast.js
+│   └── useMediaQuery.js
+└── styles/globals.css   Mobile-first design system
+```
 
-1. Push `raylane-backend/` to a GitHub repository
-2. Go to [render.com](https://render.com) → New → Web Service
-3. Connect your GitHub repo
-4. Settings:
-   - **Build Command**: `npm install`
-   - **Start Command**: `npm start`
-   - **Environment**: Node
-5. Add Environment Variables:
-   - `JWT_SECRET` → any long random string
-   - `NODE_ENV` → `production`
-   - `FRONTEND_URL` → your Vercel URL (after deploying frontend)
-6. Deploy — note your Render URL (e.g. `https://raylane-api.onrender.com`)
+## 🎨 Design System
 
----
+| Token | Value |
+|---|---|
+| Primary Blue | `#0B3D91` |
+| Gold Accent | `#FFC72C` |
+| Font (Headings) | Montserrat 700–900 |
+| Font (Body) | Inter 400–600 |
+| Mobile breakpoint | 768px |
+| Container max-width | 1200px |
 
-## 🌐 FRONTEND — Deploy to Vercel
+## 💳 Payment Integration Points
 
-1. Push `raylane-frontend/` to a GitHub repository
-2. Go to [vercel.com](https://vercel.com) → New Project
-3. Import your repo
-4. Settings:
-   - **Framework Preset**: Create React App
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `build`
-5. Add Environment Variable:
-   - `REACT_APP_API_URL` → your Render backend URL
-6. Deploy
+Replace `PaymentModule` in `SharedComponents.jsx`:
+- **MTN MoMo**: `https://developer.mtn.com/products/mobile-money`
+- **Airtel Money**: `https://developers.airtel.africa`
 
----
+## 🏦 Premium Services (Admin-activated)
 
-## 🔑 Demo Login Credentials
+| Service | Monthly Fee |
+|---|---|
+| Sacco Module | UGX 200,000 |
+| Bank Loan Monitor | UGX 150,000 |
+| Staff / HR Management | UGX 100,000 |
+| Fleet Maintenance | UGX 120,000 |
+| Fuel Management | UGX 80,000 |
+| Insurance Dashboard | UGX 80,000 |
+| Advanced Analytics | UGX 100,000 |
+| Supplier & Vendor Pay | UGX 60,000 |
 
-| Role     | Email                  | Password     |
-|----------|------------------------|--------------|
-| Admin    | admin@raylane.ug       | admin123     |
-| Operator | gaaga@buses.ug         | operator123  |
-| Operator | link@buses.ug          | operator123  |
+## 🔌 Backend Integration
 
----
-
-## 📱 Portal URLs
-
-| Portal    | URL            | Access          |
-|-----------|----------------|-----------------|
-| Passenger | `/`            | Public          |
-| Operator  | `/operator`    | Operator login  |
-| Admin     | `/admin`       | Admin login     |
-| Login     | `/login`       | All staff       |
-
----
-
-## 🔄 Core System Flows (Implemented)
-
-### Passenger Booking Flow
-1. Home → Search trips
-2. Select trip → Live seat map
-3. Lock seat (5-min server timer)
-4. Enter details → Choose payment
-5. Simulated payment → Confirm booking
-6. QR code e-ticket generated
-
-### Operator Flow
-1. Login → Dashboard overview
-2. Create trip → Submitted for admin approval
-3. View bookings → Confirm boarding
-4. Manage seats manually
-5. View financial reports (if module active)
-
-### Admin Flow
-1. Login → Control center
-2. Approve/reject trips and operators
-3. Manage module access per operator
-4. Monitor all bookings and payments
-5. Release payouts to operators (per trip)
-6. Monitor alerts inbox
+Replace mock data in `src/data/index.js` with API calls.
+Key endpoints to implement:
+- `GET /trips?from=&to=&date=` — search trips
+- `POST /bookings` — create booking
+- `POST /payments/initiate` — trigger MoMo payment
+- `GET /parcels/:id/track` — parcel tracking
+- `GET /operators/:id/dashboard` — operator stats
+- `POST /admin/payouts/:tripId/release` — manual payout
 
 ---
-
-## 🏦 Financial Rules (Implemented)
-- **8% commission** deducted from every payment
-- Operator balance **held** until admin releases
-- **One payout per trip** (enforced)
-- Only to **registered merchant code**
-
----
-
-## 💎 Module System
-Modules activated by admin per operator:
-- `TRIPS` — Create and manage trips
-- `SEAT_MANAGEMENT` — Live seat control
-- `BOOKINGS` — Passenger management
-- `PARCELS` — Parcel handling
-- `FINANCIAL` — Financial reports (premium)
-- `FUEL` — Fuel tracking (premium)
-- `LOANS` — Loan monitoring (premium)
-- `HR` — Staff management (premium)
-- `ANALYTICS` — Route analytics (premium)
-
----
-
-## 🛠️ Production Upgrades (Recommended)
-- Replace in-memory store with **PostgreSQL** (use Supabase or Render Postgres)
-- Add real **MTN/Airtel Mobile Money API** integration
-- Add **WebSocket** for real-time seat updates
-- Add **SMS notifications** via Africa's Talking
-- Add **image uploads** for operator documents
-- Implement **SACCO module** financial system
+© 2026 Raylane Express Ltd · Kampala, Uganda 🇺🇬
