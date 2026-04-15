@@ -527,6 +527,17 @@ export default function AdminDashboard() {
         {/* -- USERS -- */}
         {tab === 'users' && (
           <div>
+            <Banner type="info">Manages Raylane and all operator users. Operator user requests appear below for approval.</Banner>
+            <div style={{ background:'#fef9c3', borderRadius:14, padding:'12px 16px', marginBottom:14, display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:10 }}>
+              <div>
+                <div style={{ ...P, fontWeight:700, fontSize:13, color:'#92400e', marginBottom:2 }}>Pending User Request -- Global Coaches</div>
+                <div style={{ fontSize:12, ...I, color:'#78350f' }}>John Mugisha -- Dispatcher -- john@globalcoaches.ug -- Submitted 2h ago</div>
+              </div>
+              <div style={{ display:'flex', gap:8 }}>
+                <Btn size="sm" variant="success" onClick={() => toast('Account created. Login sent to john@globalcoaches.ug','success')}>Approve</Btn>
+                <Btn size="sm" variant="danger"  onClick={() => toast('Request declined','error')}>Decline</Btn>
+              </div>
+            </div>
             <div style={{ display:'flex', justifyContent:'flex-end', marginBottom:14 }}>
               <Btn variant="blue" onClick={() => { setUForm({ name:'', email:'', phone:'', role:'DISPATCHER', op:'Raylane Express', status:'Active' }); setUModal('add') }}>+ Add User</Btn>
             </div>

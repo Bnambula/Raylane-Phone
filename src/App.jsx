@@ -5,11 +5,12 @@ import MobileBottomNav from './components/layout/MobileBottomNav'
 import Home from './pages/Home'
 import BookingFlow from './pages/BookingFlow'
 import ParcelPage from './pages/ParcelPage'
+import PartnerPortal from './pages/PartnerPortal'
+import AccountPage from './pages/AccountPage'
 import OperatorDashboard from './pages/operator/OperatorDashboard'
 import AdminDashboard from './pages/admin/AdminDashboard'
-import PartnerPortal from './pages/PartnerPortal'
 import ToastContainer from './components/ui/ToastContainer'
-import AccountPage from './pages/AccountPage'
+import ErrorBoundary from './components/ui/ErrorBoundary'
 import { ToastContext } from './hooks/useToast'
 
 const DASH_ROUTES = ['/admin', '/operator']
@@ -38,9 +39,9 @@ function AppInner() {
         <Route path="/book"     element={<BookingFlow />} />
         <Route path="/parcels"  element={<ParcelPage />} />
         <Route path="/partner"  element={<PartnerPortal />} />
-        <Route path="/operator/*" element={<OperatorDashboard />} />
-        <Route path="/admin/*"    element={<AdminDashboard />} />
-        <Route path="/account"    element={<AccountPage />} />
+        <Route path="/account"  element={<AccountPage />} />
+        <Route path="/operator/*" element={<ErrorBoundary><OperatorDashboard /></ErrorBoundary>} />
+        <Route path="/admin/*"    element={<ErrorBoundary><AdminDashboard /></ErrorBoundary>} />
         <Route path="*"         element={<Home />} />
       </Routes>
       {!isDash && <MobileBottomNav />}
