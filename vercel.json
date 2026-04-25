@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "name": "raylane-express",
+  "routes": [
+    { "src": "/(.*)", "dest": "/public/index.html" }
+  ]
+}
